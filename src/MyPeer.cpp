@@ -418,7 +418,10 @@ void MyPeer::connected(bool connected)
 		if(!stateParameter.rpcParameter) return;
 		BaseLib::PVariable value(new BaseLib::Variable(connected));
 
-		_binaryEncoder->encodeResponse(value, stateParameter.data);
+		std::vector<uint8_t> newValue;
+		_binaryEncoder->encodeResponse(value, newValue);
+		if(newValue == stateParameter.data) return;
+		stateParameter.data = std::move(newValue);
 		if(stateParameter.databaseID > 0) saveParameter(stateParameter.databaseID, stateParameter.data);
 		else saveParameter(0, ParameterGroup::Type::Enum::variables, channel, "CONNECTED", stateParameter.data);
 		if(_bl->debugLevel >= 4) GD::out.printInfo("Info: CONNECTED of peer " + std::to_string(_peerID) + " with serial number " + _serialNumber + ":1 was set to 0x" + BaseLib::HelperFunctions::getHexString(stateParameter.data) + ".");
