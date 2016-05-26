@@ -40,13 +40,19 @@ class MyPacket : public BaseLib::Systems::Packet
     public:
         //Properties
         MyPacket();
-        MyPacket(std::string method, BaseLib::PArray parameters, int64_t timeReceived = 0);
+        MyPacket(BaseLib::PVariable& json, int64_t timeReceived = 0);
+        MyPacket(std::string method, BaseLib::PVariable parameters, int64_t timeReceived = 0);
         virtual ~MyPacket();
 
         virtual BaseLib::PVariable getJson();
+
+        std::string getMethod();
+        BaseLib::PVariable getParameters();
+        BaseLib::PVariable getResult();
     protected:
         std::string _method;
-        BaseLib::PArray _parameters;
+        BaseLib::PVariable _parameters;
+        BaseLib::PVariable _result;
 };
 
 }

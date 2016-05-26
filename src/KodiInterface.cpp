@@ -66,6 +66,16 @@ KodiInterface::~KodiInterface()
     }
 }
 
+void KodiInterface::setConnectedCallback(std::function<void(bool connected)> callback)
+{
+	_connectedCallback = callback;
+}
+
+void KodiInterface::setPacketReceivedCallback(std::function<void(std::shared_ptr<MyPacket> packet)> callback)
+{
+	_packetReceivedCallback = callback;
+}
+
 std::string KodiInterface::getHostname() { return _hostname; }
 
 void KodiInterface::setHostname(std::string& hostname)
@@ -185,9 +195,11 @@ void KodiInterface::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
 		PVariable json = kodiPacket->getJson();
 		if(!json) return;
 
+		json->print(false, true);
+
 		PVariable response;
 		getResponse(json, response);
-		if(response) std::cerr << "Resposne " << response->print() << std::endl;
+		if(response) std::cerr << "Response " << response->print() << std::endl;
 	}
 	catch(const std::exception& ex)
     {
@@ -207,11 +219,13 @@ void KodiInterface::reconnect()
 {
 	try
 	{
+		if(_connectedCallback) _connectedCallback(false);
 		_socket->close();
 		_out.printDebug("Connecting to Kodi with hostname " + _hostname + " on port " + std::to_string(_port) + "...");
 		_socket->open();
 		_out.printInfo("Connected to Kodi with hostname " + _hostname + " on port " + std::to_string(_port) + ".");
 		_stopped = false;
+		if(_connectedCallback) _connectedCallback(true);
 	}
     catch(const std::exception& ex)
     {
@@ -254,6 +268,7 @@ void KodiInterface::stopListening()
 {
 	try
 	{
+		if(_connectedCallback) _connectedCallback(false);
 		_stopCallbackThread = true;
 		GD::bl->threadManager.join(_listenThread);
 		_stopCallbackThread = false;
@@ -330,14 +345,11 @@ void KodiInterface::listen()
 			}
 			if(data.empty() || data.size() > 1000000) continue;
 
-        	if(GD::bl->debugLevel >= 6)
+        	if(GD::bl->debugLevel >= 5)
         	{
-        		_out.printDebug("Debug: Packet received from Kodi. Raw data:");
-        		_out.printBinary(data);
+        		std::string debug((char*)&data.at(0), data.size());
+        		_out.printDebug("Debug: Packet received from Kodi: " + debug);
         	}
-
-        	std::string debug((char*)&data.at(0), data.size());
-        	_out.printError(debug);
 
         	BaseLib::PVariable json;
         	uint32_t bytesRead = 0;
@@ -350,6 +362,7 @@ void KodiInterface::listen()
 					{
 						std::vector<char> newData(data.begin() + bytesRead, data.end());
 						data.swap(newData);
+						bytesRead = 0;
 						if(json) processData(json);
 					}
 					else
@@ -403,10 +416,9 @@ void KodiInterface::processData(BaseLib::PVariable& json)
 			}
 			else _requestsMutex.unlock();
 		}
-		else
-		{
 
-		}
+		std::shared_ptr<MyPacket> packet(new MyPacket(json, BaseLib::HelperFunctions::getTime()));
+		if(_packetReceivedCallback) _packetReceivedCallback(packet);
 	}
 	catch(const std::exception& ex)
     {

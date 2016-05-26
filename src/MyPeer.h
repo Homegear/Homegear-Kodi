@@ -42,6 +42,22 @@ namespace MyFamily
 {
 class MyCentral;
 
+class FrameValue
+{
+public:
+	std::list<uint32_t> channels;
+	std::vector<uint8_t> value;
+};
+
+class FrameValues
+{
+public:
+	std::string frameID;
+	std::list<uint32_t> paramsetChannels;
+	ParameterGroup::Type::Enum parameterSetType;
+	std::map<std::string, FrameValue> values;
+};
+
 class MyPeer : public BaseLib::Systems::Peer, public BaseLib::Rpc::IWebserverEventSink
 {
 public:
@@ -91,7 +107,11 @@ protected:
 	virtual void loadVariables(BaseLib::Systems::ICentral* central, std::shared_ptr<BaseLib::Database::DataTable>& rows);
     virtual void saveVariables();
 
+    void connected(bool connected);
+    void packetReceived(std::shared_ptr<MyPacket> packet);
+
 	virtual std::shared_ptr<BaseLib::Systems::ICentral> getCentral();
+	void getValuesFromPacket(std::shared_ptr<MyPacket> packet, std::vector<FrameValues>& frameValue);
 
 	virtual PParameterGroup getParameterSet(int32_t channel, ParameterGroup::Type::Enum type);
 };

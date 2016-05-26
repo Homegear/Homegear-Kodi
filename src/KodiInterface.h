@@ -44,6 +44,8 @@ public:
 	KodiInterface();
 	virtual ~KodiInterface();
 
+	void setConnectedCallback(std::function<void(bool connected)> callback);
+	void setPacketReceivedCallback(std::function<void(std::shared_ptr<MyPacket> packet)> callback);
 	void sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet);
 	std::string getHostname();
 	void setHostname(std::string& hostname);
@@ -71,6 +73,8 @@ protected:
 	int32_t _port = 9090;
 	std::unique_ptr<BaseLib::RPC::JsonEncoder> _jsonEncoder;
 	std::unique_ptr<BaseLib::RPC::JsonDecoder> _jsonDecoder;
+	std::function<void(bool connected)> _connectedCallback;
+	std::function<void(std::shared_ptr<MyPacket> packet)> _packetReceivedCallback;
 
 	std::thread _listenThread;
 	bool _stopCallbackThread = false;

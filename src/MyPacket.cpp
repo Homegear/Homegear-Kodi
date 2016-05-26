@@ -37,7 +37,18 @@ MyPacket::MyPacket()
 {
 }
 
-MyPacket::MyPacket(std::string method, BaseLib::PArray parameters, int64_t timeReceived)
+MyPacket::MyPacket(BaseLib::PVariable& json, int64_t timeReceived)
+{
+	_timeReceived = timeReceived;
+	BaseLib::Struct::iterator jsonIterator = json->structValue->find("method");
+	if(jsonIterator != json->structValue->end()) _method = jsonIterator->second->stringValue;
+	jsonIterator = json->structValue->find("params");
+	if(jsonIterator != json->structValue->end()) _parameters = jsonIterator->second;
+	jsonIterator = json->structValue->find("result");
+	if(jsonIterator != json->structValue->end()) _result = jsonIterator->second;
+}
+
+MyPacket::MyPacket(std::string method, BaseLib::PVariable parameters, int64_t timeReceived)
 {
 	_timeReceived = timeReceived;
 	_method = method;
@@ -48,6 +59,21 @@ MyPacket::~MyPacket()
 {
 }
 
+std::string MyPacket::getMethod()
+{
+	return _method;
+}
+
+BaseLib::PVariable MyPacket::getParameters()
+{
+	return _parameters;
+}
+
+BaseLib::PVariable MyPacket::getResult()
+{
+	return _result;
+}
+
 BaseLib::PVariable MyPacket::getJson()
 {
 	try
@@ -55,7 +81,7 @@ BaseLib::PVariable MyPacket::getJson()
 		BaseLib::PVariable json(new BaseLib::Variable(BaseLib::VariableType::tStruct));
 		json->structValue->insert(BaseLib::StructElement("jsonrpc", BaseLib::PVariable(new BaseLib::Variable(std::string("2.0")))));
 		json->structValue->insert(BaseLib::StructElement("method", BaseLib::PVariable(new BaseLib::Variable(_method))));
-		json->structValue->insert(BaseLib::StructElement("params", BaseLib::PVariable(new BaseLib::Variable(_parameters))));
+		json->structValue->insert(BaseLib::StructElement("params", _parameters));
 		return json;
 	}
 	catch(const std::exception& ex)
