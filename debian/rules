@@ -1,0 +1,20 @@
+#!/usr/bin/make -f
+
+override_dh_auto_install:
+	dh_auto_install
+
+	mkdir -p $(CURDIR)/debian/homegear-kodi/etc/homegear/families
+	cp -R $(CURDIR)/misc/Config\ Directory/* $(CURDIR)/debian/homegear-kodi/etc/homegear/families
+	chmod 755 $(CURDIR)/debian/homegear-kodi/etc/homegear/families
+	chmod 644 $(CURDIR)/debian/homegear-kodi/etc/homegear/families/*
+
+	mkdir -p $(CURDIR)/debian/homegear-kodi/etc/homegear/devices/9
+	cp $(CURDIR)/misc/Device\ Description\ Files/* $(CURDIR)/debian/homegear-kodi/etc/homegear/devices/9
+	chmod 755 $(CURDIR)/debian/homegear-kodi/etc/homegear/devices/9
+	chmod 644 $(CURDIR)/debian/homegear-kodi/etc/homegear/devices/9/*
+
+override_dh_strip:
+	dh_strip --dbg-package=homegear-kodi
+
+%:
+	dh $@ --parallel
