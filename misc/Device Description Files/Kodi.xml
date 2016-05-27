@@ -1,0 +1,347 @@
+<homegearDevice version="1">
+	<supportedDevices>
+		<device id="Kodi">
+			<description>Kodi</description>
+			<typeNumber>0x1</typeNumber>
+			<minFirmwareVersion>0</minFirmwareVersion>
+		</device>
+	</supportedDevices>
+	<properties/>
+	<functions>
+		<function channel="0" type="MAINTENANCE" channelCount="1">
+			<properties>
+				<internal>true</internal>
+			</properties>
+			<configParameters>maint_ch_master--0</configParameters>
+			<variables>maint_ch_values--0</variables>
+		</function>
+		<function channel="5" type="Gui" channelCount="1">
+			<properties/>
+			<configParameters>config</configParameters>
+			<variables>gui_valueset</variables>
+		</function>
+		<function channel="9" type="Player" channelCount="1">
+			<properties/>
+			<configParameters>config</configParameters>
+			<variables>player_valueset</variables>
+		</function>
+		<function channel="11" type="System" channelCount="1">
+			<properties/>
+			<configParameters>config</configParameters>
+			<variables>system_valueset</variables>
+		</function>
+	</functions>
+	<packets>
+		<!-- Namespace Player -->
+		<packet id="Player.PlayPause">
+			<direction>fromCentral</direction>
+			<function1>Player.PlayPause</function1>
+			<jsonPayload>
+				<element>
+					<parameterId>PLAYER_ID</parameterId>
+				</element>
+			</jsonPayload>
+		</packet>
+		<packet id="Player.OnPlay">
+			<direction>toCentral</direction>
+			<function1>Player.OnPlay</function1>
+			<channel>9</channel>
+			<jsonPayload>
+				<element>
+					<keyPath>params\data\player\playerid</keyPath>
+					<parameterId>PLAYER_ID</parameterId>
+				</element>
+				<element>
+					<parameterId>STATE</parameterId>
+					<constValueInteger>2</constValueInteger>
+				</element>
+			</jsonPayload>
+		</packet>
+		<packet id="Player.OnPause">
+			<direction>toCentral</direction>
+			<function1>Player.OnPause</function1>
+			<channel>9</channel>
+			<jsonPayload>
+				<element>
+					<keyPath>params\data\player\playerid</keyPath>
+					<parameterId>PLAYER_ID</parameterId>
+				</element>
+				<element>
+					<parameterId>STATE</parameterId>
+					<constValueInteger>1</constValueInteger>
+				</element>
+			</jsonPayload>
+		</packet>
+		<packet id="Player.OnStop">
+			<direction>toCentral</direction>
+			<function1>Player.OnStop</function1>
+			<channel>9</channel>
+			<jsonPayload>
+				<element>
+					<parameterId>PLAYER_ID</parameterId>
+					<constValueInteger>-1</constValueInteger>
+				</element>
+				<element>
+					<parameterId>STATE</parameterId>
+					<constValueInteger>0</constValueInteger>
+				</element>
+			</jsonPayload>
+		</packet>
+		<!-- Namespace GUI -->
+		<packet id="GUI.OnScreensaverActivated">
+			<direction>toCentral</direction>
+			<function1>GUI.OnScreensaverActivated</function1>
+			<channel>5</channel>
+			<jsonPayload>
+				<element>
+					<parameterId>SCREENSAVER</parameterId>
+					<constValueBoolean>true</constValueBoolean>
+				</element>
+			</jsonPayload>
+		</packet>
+		<packet id="GUI.OnScreensaverDeactivated">
+			<direction>toCentral</direction>
+			<function1>GUI.OnScreensaverDeactivated</function1>
+			<channel>5</channel>
+			<jsonPayload>
+				<element>
+					<parameterId>SCREENSAVER</parameterId>
+					<constValueBoolean>false</constValueBoolean>
+				</element>
+			</jsonPayload>
+		</packet>
+	</packets>
+	<parameterGroups>
+		<configParameters id="config"/>
+		<configParameters id="maint_ch_master--0">
+			<parameter id="HOSTNAME">
+		        <properties>
+		          <label>Hostname</label>
+		          <readable>true</readable>
+		          <writeable>true</writeable>
+		          <formFieldType>text</formFieldType>
+		          <formPosition>1</formPosition>
+		          <casts>
+		            <rpcBinary />
+		          </casts>
+		        </properties>
+		        <logicalString/>
+		        <physicalNone>
+		          <operationType>config</operationType>
+		        </physicalNone>
+			</parameter>
+			<parameter id="PORT">
+		        <properties>
+		          <label>Port</label>
+		          <readable>true</readable>
+		          <writeable>true</writeable>
+		          <formFieldType>text</formFieldType>
+		          <formPosition>1</formPosition>
+		          <casts>
+		            <rpcBinary />
+		          </casts>
+		        </properties>
+		        <logicalInteger>
+		        	<minimumValue>1</minimumValue>
+		        	<maximumValue>65535</maximumValue>
+		        	<defaultValue>9090</defaultValue>
+		        </logicalInteger>
+		        <physicalNone>
+		          <operationType>config</operationType>
+		        </physicalNone>
+			</parameter>
+		</configParameters>
+		<variables id="maint_ch_values--0">
+			<parameter id="UNREACH">
+				<properties>
+					<writeable>false</writeable>
+					<service>true</service>
+				</properties>
+				<logicalBoolean/>
+				<physicalInteger groupId="UNREACH">
+					<operationType>internal</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="STICKY_UNREACH">
+				<properties>
+					<service>true</service>
+					<sticky>true</sticky>
+				</properties>
+				<logicalBoolean/>
+				<physicalInteger groupId="STICKY_UNREACH">
+					<operationType>internal</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="CONFIG_PENDING">
+				<properties>
+					<writeable>false</writeable>
+					<service>true</service>
+				</properties>
+				<logicalBoolean/>
+				<physicalInteger groupId="CONFIG_PENDING">
+					<operationType>internal</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="RSSI_DEVICE">
+				<properties>
+					<writeable>false</writeable>
+				</properties>
+				<logicalInteger/>
+				<physicalInteger groupId="RSSI_DEVICE">
+					<operationType>internal</operationType>
+				</physicalInteger>
+			</parameter>
+			<parameter id="RSSI_PEER">
+				<properties>
+					<writeable>false</writeable>
+				</properties>
+				<logicalInteger/>
+				<physicalInteger groupId="RSSI_PEER">
+					<operationType>internal</operationType>
+				</physicalInteger>
+			</parameter>
+		</variables>
+		<variables id="gui_valueset">
+			<parameter id="SCREENSAVER">
+				<properties>
+					<writeable>false</writeable>
+					<casts>
+						<rpcBinary/>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalNone groupId="SCREENSAVER">
+					<operationType>command</operationType>
+				</physicalNone>
+				<packets>
+					<packet id="GUI.OnScreensaverActivated">
+						<type>event</type>
+					</packet>
+					<packet id="GUI.OnScreensaverDeactivated">
+						<type>event</type>
+					</packet>
+				</packets>
+			</parameter>
+		</variables>
+		<variables id="player_valueset">
+			<parameter id="PLAYER_ID">
+				<properties>
+					<writeable>false</writeable>
+					<casts>
+						<rpcBinary/>
+					</casts>
+				</properties>
+				<logicalEnumeration>
+					<defaultValue>-1</defaultValue>
+					<value>
+						<id>none</id>
+						<index>-1</index>
+					</value>
+					<value>
+						<id>audio</id>
+						<index>0</index>
+					</value>
+					<value>
+						<id>video</id>
+						<index>1</index>
+					</value>
+					<value>
+						<id>pictures</id>
+						<index>2</index>
+					</value>
+				</logicalEnumeration>
+				<physicalNone groupId="PLAYER_ID">
+					<operationType>store</operationType>
+				</physicalNone>
+				<packets>
+					<packet id="Player.OnPlay">
+						<type>event</type>
+					</packet>
+					<packet id="Player.OnPause">
+						<type>event</type>
+					</packet>
+					<packet id="Player.OnStop">
+						<type>event</type>
+					</packet>
+				</packets>
+			</parameter>
+			<parameter id="STATE">
+				<properties>
+					<writeable>false</writeable>
+					<casts>
+						<rpcBinary/>
+					</casts>
+				</properties>
+				<logicalEnumeration>
+					<defaultValue>-1</defaultValue>
+					<value>
+						<id>undefined</id>
+						<index>-1</index>
+					</value>
+					<value>
+						<id>stopped</id>
+						<index>0</index>
+					</value>
+					<value>
+						<id>paused</id>
+						<index>1</index>
+					</value>
+					<value>
+						<id>playing</id>
+						<index>2</index>
+					</value>
+				</logicalEnumeration>
+				<physicalNone groupId="STATE">
+					<operationType>command</operationType>
+				</physicalNone>
+				<packets>
+					<packet id="Player.OnPlay">
+						<type>event</type>
+					</packet>
+					<packet id="Player.OnPause">
+						<type>event</type>
+					</packet>
+					<packet id="Player.OnStop">
+						<type>event</type>
+					</packet>
+				</packets>
+			</parameter>
+			<parameter id="PLAY_PAUSE">
+				<properties>
+					<casts>
+						<optionString/>
+						<rpcBinary/>
+					</casts>
+				</properties>
+				<logicalAction />
+				<physicalNone groupId="PLAY_PAUSE">
+					<operationType>command</operationType>
+				</physicalNone>
+				<packets>
+					<packet id="Player.PlayPause">
+						<type>set</type>
+					</packet>
+				</packets>
+			</parameter>
+		</variables>
+		<variables id="system_valueset">
+			<parameter id="CONNECTED">
+				<properties>
+					<writeable>false</writeable>
+					<casts>
+						<rpcBinary/>
+					</casts>
+				</properties>
+				<logicalBoolean>
+					<defaultValue>false</defaultValue>
+				</logicalBoolean>
+				<physicalNone>
+					<operationType>store</operationType>
+				</physicalNone>
+			</parameter>
+		</variables>
+	</parameterGroups>
+</homegearDevice>
+
