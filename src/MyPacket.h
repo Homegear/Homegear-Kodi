@@ -30,7 +30,7 @@
 #ifndef MYPACKET_H_
 #define MYPACKET_H_
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 
 namespace MyFamily
 {
