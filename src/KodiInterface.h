@@ -31,7 +31,7 @@
 #define KODIINTERFACE_H_
 
 #include "MyPacket.h"
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 
 namespace MyFamily
 {

@@ -672,7 +672,7 @@ std::shared_ptr<MyPeer> MyCentral::createPeer(std::string serialNumber, bool sav
     return std::shared_ptr<MyPeer>();
 }
 
-PVariable MyCentral::createDevice(BaseLib::PRpcClientInfo clientInfo, int32_t deviceType, std::string serialNumber, int32_t address, int32_t firmwareVersion)
+PVariable MyCentral::createDevice(BaseLib::PRpcClientInfo clientInfo, int32_t deviceType, std::string serialNumber, int32_t address, int32_t firmwareVersion, std::string interfaceId)
 {
 	try
 	{

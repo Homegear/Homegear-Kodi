@@ -30,7 +30,7 @@
 #ifndef MYFAMILY_H_
 #define MYFAMILY_H_
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 
 using namespace BaseLib;
 

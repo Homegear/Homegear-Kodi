@@ -33,7 +33,7 @@
 #define MY_FAMILY_ID 9
 #define MY_FAMILY_NAME "Kodi"
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 #include "MyFamily.h"
 
 namespace MyFamily

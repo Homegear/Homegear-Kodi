@@ -30,7 +30,7 @@
 #ifndef MYPEER_H_
 #define MYPEER_H_
 
-#include "homegear-base/BaseLib.h"
+#include <homegear-base/BaseLib.h>
 #include "KodiInterface.h"
 
 #include <list>
