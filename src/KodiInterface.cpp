@@ -39,7 +39,7 @@ KodiInterface::KodiInterface()
 	_out.setPrefix(GD::out.getPrefix() + "Kodi interface: ");
 
 	signal(SIGPIPE, SIG_IGN);
-	_socket = std::unique_ptr<BaseLib::SocketOperations>(new BaseLib::SocketOperations(GD::bl));
+	_socket = std::unique_ptr<BaseLib::TcpSocket>(new BaseLib::TcpSocket(GD::bl));
 
 	_jsonEncoder.reset(new BaseLib::RPC::JsonEncoder(GD::bl));
 	_jsonDecoder.reset(new BaseLib::RPC::JsonDecoder(GD::bl));
@@ -247,7 +247,7 @@ void KodiInterface::startListening()
 	{
 		stopListening();
 		if(_hostname.empty()) return;
-		_socket = std::unique_ptr<BaseLib::SocketOperations>(new BaseLib::SocketOperations(GD::bl, _hostname, std::to_string(_port)));
+		_socket = std::unique_ptr<BaseLib::TcpSocket>(new BaseLib::TcpSocket(GD::bl, _hostname, std::to_string(_port)));
 		GD::bl->threadManager.start(_listenThread, true, &KodiInterface::listen, this);
 	}
     catch(const std::exception& ex)

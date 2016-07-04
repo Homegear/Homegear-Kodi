@@ -68,7 +68,7 @@ protected:
 	};
 
 	BaseLib::Output _out;
-	std::unique_ptr<BaseLib::SocketOperations> _socket;
+	std::unique_ptr<BaseLib::TcpSocket> _socket;
 	std::string _hostname;
 	int32_t _port = 9090;
 	std::unique_ptr<BaseLib::RPC::JsonEncoder> _jsonEncoder;
