@@ -41,8 +41,8 @@ KodiInterface::KodiInterface()
 	signal(SIGPIPE, SIG_IGN);
 	_socket = std::unique_ptr<BaseLib::TcpSocket>(new BaseLib::TcpSocket(GD::bl));
 
-	_jsonEncoder.reset(new BaseLib::RPC::JsonEncoder(GD::bl));
-	_jsonDecoder.reset(new BaseLib::RPC::JsonDecoder(GD::bl));
+	_jsonEncoder.reset(new BaseLib::Rpc::JsonEncoder(GD::bl));
+	_jsonDecoder.reset(new BaseLib::Rpc::JsonDecoder(GD::bl));
 }
 
 KodiInterface::~KodiInterface()
@@ -373,7 +373,7 @@ void KodiInterface::listen()
 					}
         		}
         	}
-			catch(BaseLib::RPC::JsonDecoderException& ex)
+			catch(BaseLib::Rpc::JsonDecoderException& ex)
 			{
 				continue;
 			}
