@@ -92,8 +92,8 @@ void MyPeer::init()
 {
 	try
 	{
-		_binaryEncoder.reset(new BaseLib::RPC::RPCEncoder(GD::bl));
-		_binaryDecoder.reset(new BaseLib::RPC::RPCDecoder(GD::bl));
+		_binaryEncoder.reset(new BaseLib::Rpc::RpcEncoder(GD::bl));
+		_binaryDecoder.reset(new BaseLib::Rpc::RpcDecoder(GD::bl));
 		_interface.setPacketReceivedCallback(std::bind(&MyPeer::packetReceived, this, std::placeholders::_1));
 		_interface.setConnectedCallback(std::bind(&MyPeer::connected, this, std::placeholders::_1));
 	}

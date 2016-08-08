@@ -98,8 +98,8 @@ public:
 	virtual PVariable setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel, std::string valueKey, PVariable value, bool wait);
 	//End RPC methods
 protected:
-	std::shared_ptr<BaseLib::RPC::RPCEncoder> _binaryEncoder;
-	std::shared_ptr<BaseLib::RPC::RPCDecoder> _binaryDecoder;
+	std::shared_ptr<BaseLib::Rpc::RpcEncoder> _binaryEncoder;
+	std::shared_ptr<BaseLib::Rpc::RpcDecoder> _binaryDecoder;
 
 	bool _shuttingDown = false;
 	KodiInterface _interface;

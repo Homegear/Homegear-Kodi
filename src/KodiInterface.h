@@ -71,8 +71,8 @@ protected:
 	std::unique_ptr<BaseLib::TcpSocket> _socket;
 	std::string _hostname;
 	int32_t _port = 9090;
-	std::unique_ptr<BaseLib::RPC::JsonEncoder> _jsonEncoder;
-	std::unique_ptr<BaseLib::RPC::JsonDecoder> _jsonDecoder;
+	std::unique_ptr<BaseLib::Rpc::JsonEncoder> _jsonEncoder;
+	std::unique_ptr<BaseLib::Rpc::JsonDecoder> _jsonDecoder;
 	std::function<void(bool connected)> _connectedCallback;
 	std::function<void(std::shared_ptr<MyPacket> packet)> _packetReceivedCallback;
 
