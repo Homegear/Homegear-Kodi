@@ -41,7 +41,7 @@ class MyCentral;
 class MyFamily : public BaseLib::Systems::DeviceFamily
 {
 public:
-	MyFamily(BaseLib::Obj* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eventHandler);
+	MyFamily(BaseLib::SharedObjects* bl, BaseLib::Systems::DeviceFamily::IFamilyEventSink* eventHandler);
 	virtual ~MyFamily();
 	virtual void dispose();
 
