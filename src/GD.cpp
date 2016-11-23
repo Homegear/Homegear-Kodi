@@ -31,7 +31,7 @@
 
 namespace MyFamily
 {
-	BaseLib::Obj* GD::bl = nullptr;
+	BaseLib::SharedObjects* GD::bl = nullptr;
 	MyFamily* GD::family = nullptr;
 	BaseLib::Output GD::out;
 }
