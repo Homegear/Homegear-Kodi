@@ -136,7 +136,7 @@
 		          <readable>true</readable>
 		          <writeable>true</writeable>
 		          <formFieldType>text</formFieldType>
-		          <formPosition>1</formPosition>
+		          <formPosition>2</formPosition>
 		          <casts>
 		            <rpcBinary />
 		          </casts>
