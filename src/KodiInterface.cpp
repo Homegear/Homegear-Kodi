@@ -248,6 +248,9 @@ void KodiInterface::startListening()
 		stopListening();
 		if(_hostname.empty()) return;
 		_socket = std::unique_ptr<BaseLib::TcpSocket>(new BaseLib::TcpSocket(GD::bl, _hostname, std::to_string(_port)));
+		_socket->setReadTimeout(5000000);
+        _socket->setWriteTimeout(5000000);
+        _socket->setConnectionRetries(1);
 		GD::bl->threadManager.start(_listenThread, true, &KodiInterface::listen, this);
 	}
     catch(const std::exception& ex)

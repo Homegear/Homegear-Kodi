@@ -512,7 +512,8 @@ std::string MyCentral::handleCliCommand(std::string command)
 							typeID.resize(typeWidth2 - 3);
 							typeID += "...";
 						}
-						stringStream << std::setw(typeWidth2) << typeID;
+						else typeID.resize(typeWidth2, ' ');
+						stringStream << typeID << bar;
 					}
 					else stringStream << std::setw(typeWidth2);
 					stringStream << std::endl << std::dec;
