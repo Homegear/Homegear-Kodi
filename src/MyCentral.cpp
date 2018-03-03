@@ -218,7 +218,8 @@ void MyCentral::deletePeer(uint64_t id)
 			channels->arrayValue->push_back(PVariable(new Variable(i->first)));
 		}
 
-		raiseRPCDeleteDevices(deviceAddresses, deviceInfo);
+        std::vector<uint64_t> deletedIds{ id };
+		raiseRPCDeleteDevices(deletedIds, deviceAddresses, deviceInfo);
 
 		{
 			std::lock_guard<std::mutex> peersGuard(_peersMutex);
@@ -349,7 +350,8 @@ std::string MyCentral::handleCliCommand(std::string command)
 
 				PVariable deviceDescriptions(new Variable(VariableType::tArray));
 				deviceDescriptions->arrayValue = peer->getDeviceDescriptions(nullptr, true, std::map<std::string, bool>());
-				raiseRPCNewDevices(deviceDescriptions);
+                std::vector<uint64_t> newIds{ peer->getID() };
+				raiseRPCNewDevices(newIds, deviceDescriptions);
 				GD::out.printMessage("Added peer 0x" + BaseLib::HelperFunctions::getHexString(peer->getID()) + ".");
 				stringStream << "Added peer " << std::to_string(peer->getID()) << " with serial number " << serialNumber << "." << std::dec << std::endl;
 			}
@@ -722,7 +724,8 @@ PVariable MyCentral::createDevice(BaseLib::PRpcClientInfo clientInfo, int32_t de
 
 		PVariable deviceDescriptions(new Variable(VariableType::tArray));
 		deviceDescriptions->arrayValue = peer->getDeviceDescriptions(clientInfo, true, std::map<std::string, bool>());
-		raiseRPCNewDevices(deviceDescriptions);
+        std::vector<uint64_t> newIds{ peer->getID() };
+		raiseRPCNewDevices(newIds, deviceDescriptions);
 		GD::out.printMessage("Added peer 0x" + BaseLib::HelperFunctions::getHexString(peer->getID()) + ".");
 
 		return PVariable(new Variable((uint32_t)peer->getID()));
