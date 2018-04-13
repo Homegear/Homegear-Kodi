@@ -87,10 +87,31 @@ PVariable MyFamily::getPairingInfo()
 {
 	try
 	{
-		if(!_central) return PVariable(new Variable(VariableType::tArray));
-		PVariable array(new Variable(VariableType::tArray));
-		array->arrayValue->push_back(PVariable(new Variable(std::string("createDevice"))));
-		return array;
+		if(!_central) return std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		PVariable info = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+
+		//{{{ General
+		info->structValue->emplace("searchInterfaces", std::make_shared<BaseLib::Variable>(false));
+		//}}}
+
+		//{{{ Pairing methods
+		PVariable pairingMethods = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+
+		//{{{ createDevice
+		PVariable createDeviceMetadata = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		PVariable createDeviceMetadataInfo = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tStruct);
+		PVariable createDeviceFields = std::make_shared<BaseLib::Variable>(BaseLib::VariableType::tArray);
+		createDeviceFields->arrayValue->push_back(std::make_shared<BaseLib::Variable>("serialNumber"));
+		createDeviceMetadataInfo->structValue->emplace("fields", createDeviceFields);
+		createDeviceMetadata->structValue->emplace("metadataInfo", createDeviceMetadataInfo);
+
+		pairingMethods->structValue->emplace("createDevice", createDeviceMetadata);
+		//}}}
+
+		info->structValue->emplace("pairingMethods", pairingMethods);
+		//}}}
+
+		return info;
 	}
 	catch(const std::exception& ex)
 	{

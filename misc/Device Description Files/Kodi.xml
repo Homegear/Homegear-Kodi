@@ -15,7 +15,12 @@
 			<configParameters>maint_ch_master--0</configParameters>
 			<variables>maint_ch_values--0</variables>
 		</function>
-		<function channel="5" type="Gui" channelCount="1">
+		<function channel="2" type="Application" channelCount="1">
+			<properties/>
+			<configParameters>config</configParameters>
+			<variables>application_valueset</variables>
+		</function>
+		<function channel="6" type="Gui" channelCount="1">
 			<properties/>
 			<configParameters>config</configParameters>
 			<variables>gui_valueset</variables>
@@ -25,13 +30,47 @@
 			<configParameters>config</configParameters>
 			<variables>player_valueset</variables>
 		</function>
-		<function channel="11" type="System" channelCount="1">
+		<function channel="14" type="System" channelCount="1">
 			<properties/>
 			<configParameters>config</configParameters>
 			<variables>system_valueset</variables>
 		</function>
 	</functions>
 	<packets>
+		<!-- Namespace Application -->
+		<packet id="Application.SetVolume">
+			<direction>fromCentral</direction>
+			<function1>Application.SetVolume</function1>
+			<jsonPayload>
+				<element>
+					<parameterId>VOLUME</parameterId>
+				</element>
+			</jsonPayload>
+		</packet>
+		<packet id="Application.SetMute">
+			<direction>fromCentral</direction>
+			<function1>Application.SetMute</function1>
+			<jsonPayload>
+				<element>
+					<parameterId>MUTE</parameterId>
+				</element>
+			</jsonPayload>
+		</packet>
+		<packet id="Application.OnVolumeChanged">
+			<direction>toCentral</direction>
+			<function1>Application.OnVolumeChanged</function1>
+			<channel>2</channel>
+			<jsonPayload>
+				<element>
+					<keyPath>params\data\volume</keyPath>
+					<parameterId>VOLUME</parameterId>
+				</element>
+				<element>
+					<keyPath>params\data\muted</keyPath>
+					<parameterId>MUTE</parameterId>
+				</element>
+			</jsonPayload>
+		</packet>
 		<!-- Namespace Player -->
 		<packet id="Player.PlayPause">
 			<direction>fromCentral</direction>
@@ -91,7 +130,7 @@
 		<packet id="GUI.OnScreensaverActivated">
 			<direction>toCentral</direction>
 			<function1>GUI.OnScreensaverActivated</function1>
-			<channel>5</channel>
+			<channel>6</channel>
 			<jsonPayload>
 				<element>
 					<parameterId>SCREENSAVER</parameterId>
@@ -102,7 +141,7 @@
 		<packet id="GUI.OnScreensaverDeactivated">
 			<direction>toCentral</direction>
 			<function1>GUI.OnScreensaverDeactivated</function1>
-			<channel>5</channel>
+			<channel>6</channel>
 			<jsonPayload>
 				<element>
 					<parameterId>SCREENSAVER</parameterId>
@@ -199,6 +238,50 @@
 				<physicalInteger groupId="RSSI_PEER">
 					<operationType>internal</operationType>
 				</physicalInteger>
+			</parameter>
+		</variables>
+		<variables id="application_valueset">
+			<parameter id="VOLUME">
+				<properties>
+					<casts>
+						<rpcBinary/>
+					</casts>
+				</properties>
+				<logicalInteger>
+					<defaultValue>0</defaultValue>
+					<minimumValue>0</minimumValue>
+					<maximumValue>100</maximumValue>
+				</logicalInteger>
+				<physicalNone groupId="VOLUME">
+					<operationType>store</operationType>
+				</physicalNone>
+				<packets>
+					<packet id="Application.OnVolumeChanged">
+						<type>event</type>
+					</packet>
+					<packet id="Application.SetVolume">
+						<type>set</type>
+					</packet>
+				</packets>
+			</parameter>
+			<parameter id="MUTE">
+				<properties>
+					<casts>
+						<rpcBinary/>
+					</casts>
+				</properties>
+				<logicalBoolean />
+				<physicalNone groupId="MUTE">
+					<operationType>store</operationType>
+				</physicalNone>
+				<packets>
+					<packet id="Application.OnVolumeChanged">
+						<type>event</type>
+					</packet>
+					<packet id="Application.SetMute">
+						<type>set</type>
+					</packet>
+				</packets>
 			</parameter>
 		</variables>
 		<variables id="gui_valueset">
