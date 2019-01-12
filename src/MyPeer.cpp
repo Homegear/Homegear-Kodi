@@ -594,7 +594,6 @@ void MyPeer::packetReceived(std::shared_ptr<MyPacket> packet)
 					if(std::find(i->second.channels.begin(), i->second.channels.end(), *j) == i->second.channels.end()) continue;
 
 					BaseLib::Systems::RpcConfigurationParameter& parameter = valuesCentral[*j][i->first];
-					if(parameter.equals(i->second.value)) continue;
 
 					if(!valueKeys[*j] || !rpcValues[*j])
 					{
