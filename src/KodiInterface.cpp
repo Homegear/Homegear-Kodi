@@ -233,7 +233,7 @@ void KodiInterface::reconnect()
     }
     catch(BaseLib::Exception& ex)
     {
-        _out.printInfo("Info: " + ex.what());
+        if(GD::bl->debugLevel >= 5) _out.printDebug("Debug: " + ex.what());
     }
     catch(...)
     {

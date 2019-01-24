@@ -837,6 +837,11 @@ PVariable MyPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel,
 				parameters->arrayValue->push_back(PVariable(new Variable((*i)->constValueBoolean)));
 				continue;
 			}
+            if((*i)->constValueStringSet)
+            {
+                parameters->arrayValue->push_back(std::make_shared<BaseLib::Variable>((*i)->constValueString));
+                continue;
+            }
 			//We can't just search for param, because it is ambiguous (see for example LEVEL for HM-CC-TC).
 			if((*i)->parameterId == rpcParameter->physical->groupId)
 			{
