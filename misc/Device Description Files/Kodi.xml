@@ -96,6 +96,21 @@
 				</element>
 			</jsonPayload>
 		</packet>
+		<packet id="Player.OnResume">
+			<direction>toCentral</direction>
+			<function1>Player.OnResume</function1>
+			<channel>9</channel>
+			<jsonPayload>
+				<element>
+					<keyPath>params\data\player\playerid</keyPath>
+					<parameterId>PLAYER_ID</parameterId>
+				</element>
+				<element>
+					<parameterId>STATE</parameterId>
+					<constValueInteger>2</constValueInteger>
+				</element>
+			</jsonPayload>
+		</packet>
 		<packet id="Player.OnPause">
 			<direction>toCentral</direction>
 			<function1>Player.OnPause</function1>
@@ -175,7 +190,7 @@
 		          <readable>true</readable>
 		          <writeable>true</writeable>
 		          <formFieldType>text</formFieldType>
-		          <formPosition>2</formPosition>
+		          <formPosition>1</formPosition>
 		          <casts>
 		            <rpcBinary />
 		          </casts>
@@ -342,6 +357,9 @@
 					<packet id="Player.OnPlay">
 						<type>event</type>
 					</packet>
+					<packet id="Player.OnResume">
+						<type>event</type>
+					</packet>
 					<packet id="Player.OnPause">
 						<type>event</type>
 					</packet>
@@ -381,6 +399,9 @@
 				</physicalNone>
 				<packets>
 					<packet id="Player.OnPlay">
+						<type>event</type>
+					</packet>
+					<packet id="Player.OnResume">
 						<type>event</type>
 					</packet>
 					<packet id="Player.OnPause">
