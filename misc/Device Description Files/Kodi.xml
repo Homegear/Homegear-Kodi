@@ -81,9 +81,57 @@
 				</element>
 			</jsonPayload>
 		</packet>
+		<packet id="Player.Stop">
+			<direction>fromCentral</direction>
+			<function1>Player.Stop</function1>
+			<jsonPayload>
+				<element>
+					<parameterId>PLAYER_ID</parameterId>
+				</element>
+			</jsonPayload>
+		</packet>
+		<packet id="Player.Previous">
+			<direction>fromCentral</direction>
+			<function1>Player.GoTo</function1>
+			<jsonPayload>
+				<element>
+					<parameterId>PLAYER_ID</parameterId>
+				</element>
+				<element>
+					<constValueString>previous</constValueString>
+				</element>
+			</jsonPayload>
+		</packet>
+		<packet id="Player.Next">
+			<direction>fromCentral</direction>
+			<function1>Player.GoTo</function1>
+			<jsonPayload>
+				<element>
+					<parameterId>PLAYER_ID</parameterId>
+				</element>
+				<element>
+					<constValueString>next</constValueString>
+				</element>
+			</jsonPayload>
+		</packet>
 		<packet id="Player.OnPlay">
 			<direction>toCentral</direction>
 			<function1>Player.OnPlay</function1>
+			<channel>9</channel>
+			<jsonPayload>
+				<element>
+					<keyPath>params\data\player\playerid</keyPath>
+					<parameterId>PLAYER_ID</parameterId>
+				</element>
+				<element>
+					<parameterId>STATE</parameterId>
+					<constValueInteger>2</constValueInteger>
+				</element>
+			</jsonPayload>
+		</packet>
+		<packet id="Player.OnResume">
+			<direction>toCentral</direction>
+			<function1>Player.OnResume</function1>
 			<channel>9</channel>
 			<jsonPayload>
 				<element>
@@ -342,6 +390,9 @@
 					<packet id="Player.OnPlay">
 						<type>event</type>
 					</packet>
+					<packet id="Player.OnResume">
+						<type>event</type>
+					</packet>
 					<packet id="Player.OnPause">
 						<type>event</type>
 					</packet>
@@ -383,6 +434,9 @@
 					<packet id="Player.OnPlay">
 						<type>event</type>
 					</packet>
+					<packet id="Player.OnResume">
+						<type>event</type>
+					</packet>
 					<packet id="Player.OnPause">
 						<type>event</type>
 					</packet>
@@ -404,6 +458,57 @@
 				</physicalNone>
 				<packets>
 					<packet id="Player.PlayPause">
+						<type>set</type>
+					</packet>
+				</packets>
+			</parameter>
+			<parameter id="STOP">
+				<properties>
+					<casts>
+						<optionString/>
+						<rpcBinary/>
+					</casts>
+				</properties>
+				<logicalAction />
+				<physicalNone groupId="STOP">
+					<operationType>command</operationType>
+				</physicalNone>
+				<packets>
+					<packet id="Player.Stop">
+						<type>set</type>
+					</packet>
+				</packets>
+			</parameter>
+			<parameter id="PREVIOUS">
+				<properties>
+					<casts>
+						<optionString/>
+						<rpcBinary/>
+					</casts>
+				</properties>
+				<logicalAction />
+				<physicalNone groupId="PREVIOUS">
+					<operationType>command</operationType>
+				</physicalNone>
+				<packets>
+					<packet id="Player.Previous">
+						<type>set</type>
+					</packet>
+				</packets>
+			</parameter>
+			<parameter id="NEXT">
+				<properties>
+					<casts>
+						<optionString/>
+						<rpcBinary/>
+					</casts>
+				</properties>
+				<logicalAction />
+				<physicalNone groupId="NEXT">
+					<operationType>command</operationType>
+				</physicalNone>
+				<packets>
+					<packet id="Player.Next">
 						<type>set</type>
 					</packet>
 				</packets>
