@@ -148,7 +148,7 @@ void KodiInterface::getResponse(BaseLib::PVariable& request, BaseLib::PVariable&
 		}
 		catch(BaseLib::SocketOperationException ex)
 		{
-			_out.printError("Error sending packet to Kodi: " + ex.what());
+			_out.printError("Error sending packet to Kodi: " + std::string(ex.what()));
 			return;
 		}
 
@@ -233,7 +233,7 @@ void KodiInterface::reconnect()
     }
     catch(BaseLib::Exception& ex)
     {
-        if(GD::bl->debugLevel >= 5) _out.printDebug("Debug: " + ex.what());
+        if(GD::bl->debugLevel >= 5) _out.printDebug("Debug: " + std::string(ex.what()));
     }
     catch(...)
     {
@@ -335,14 +335,14 @@ void KodiInterface::listen()
 			catch(const BaseLib::SocketClosedException& ex)
 			{
 				_stopped = true;
-				_out.printInfo("Info: " + ex.what());
+				_out.printInfo("Info: " + std::string(ex.what()));
 				std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 				continue;
 			}
 			catch(const BaseLib::SocketOperationException& ex)
 			{
 				_stopped = true;
-				_out.printError("Error: " + ex.what());
+				_out.printError("Error: " + std::string(ex.what()));
 				std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 				continue;
 			}
