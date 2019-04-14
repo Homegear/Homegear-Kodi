@@ -30,6 +30,8 @@
 #include "MyCentral.h"
 #include "GD.h"
 
+#include <iomanip>
+
 namespace MyFamily {
 
 MyCentral::MyCentral(ICentralEventSink* eventHandler) : BaseLib::Systems::ICentral(MY_FAMILY_ID, GD::bl, eventHandler)

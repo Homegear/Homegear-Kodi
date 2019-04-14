@@ -199,7 +199,6 @@ void KodiInterface::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
 
 		PVariable response;
 		getResponse(json, response);
-		if(response) std::cerr << "Response " << response->print() << std::endl;
 	}
 	catch(const std::exception& ex)
     {
