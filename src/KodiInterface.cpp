@@ -30,7 +30,7 @@
 #include "GD.h"
 #include "KodiInterface.h"
 
-namespace MyFamily
+namespace Kodi
 {
 
 KodiInterface::KodiInterface()
@@ -56,14 +56,6 @@ KodiInterface::~KodiInterface()
     {
     	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
 void KodiInterface::setConnectedCallback(std::function<void(bool connected)> callback)
@@ -71,7 +63,7 @@ void KodiInterface::setConnectedCallback(std::function<void(bool connected)> cal
 	_connectedCallback = callback;
 }
 
-void KodiInterface::setPacketReceivedCallback(std::function<void(std::shared_ptr<MyPacket> packet)> callback)
+void KodiInterface::setPacketReceivedCallback(std::function<void(std::shared_ptr<KodiPacket> packet)> callback)
 {
 	_packetReceivedCallback = callback;
 }
@@ -88,14 +80,6 @@ void KodiInterface::setHostname(std::string& hostname)
     {
     	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
 int32_t KodiInterface::getPort() { return _port; }
@@ -110,14 +94,6 @@ void KodiInterface::setPort(int32_t port)
     catch(const std::exception& ex)
     {
     	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	_out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
 }
 
@@ -167,16 +143,6 @@ void KodiInterface::getResponse(BaseLib::PVariable& request, BaseLib::PVariable&
         _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
         _requestsMutex.unlock();
     }
-    catch(BaseLib::Exception& ex)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-        _requestsMutex.unlock();
-    }
-    catch(...)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-        _requestsMutex.unlock();
-    }
 }
 
 void KodiInterface::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
@@ -189,7 +155,7 @@ void KodiInterface::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
 			return;
 		}
 
-		std::shared_ptr<MyPacket> kodiPacket(std::dynamic_pointer_cast<MyPacket>(packet));
+		std::shared_ptr<KodiPacket> kodiPacket(std::dynamic_pointer_cast<KodiPacket>(packet));
 		if(!kodiPacket) return;
 
 		PVariable json = kodiPacket->getJson();
@@ -203,14 +169,6 @@ void KodiInterface::sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet)
 	catch(const std::exception& ex)
     {
         _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
 }
 
@@ -228,15 +186,7 @@ void KodiInterface::reconnect()
 	}
     catch(const std::exception& ex)
     {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-        if(GD::bl->debugLevel >= 5) _out.printDebug("Debug: " + std::string(ex.what()));
-    }
-    catch(...)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
+        _out.printDebug(ex.what());
     }
 }
 
@@ -256,14 +206,6 @@ void KodiInterface::startListening()
     {
         _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
 void KodiInterface::stopListening()
@@ -279,14 +221,6 @@ void KodiInterface::stopListening()
 	catch(const std::exception& ex)
     {
         _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
 }
 
@@ -385,14 +319,6 @@ void KodiInterface::listen()
     {
         _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
 void KodiInterface::processData(BaseLib::PVariable& json)
@@ -419,20 +345,12 @@ void KodiInterface::processData(BaseLib::PVariable& json)
 			else _requestsMutex.unlock();
 		}
 
-		std::shared_ptr<MyPacket> packet(new MyPacket(json, BaseLib::HelperFunctions::getTime()));
+		std::shared_ptr<KodiPacket> packet(new KodiPacket(json, BaseLib::HelperFunctions::getTime()));
 		if(_packetReceivedCallback) _packetReceivedCallback(packet);
 	}
 	catch(const std::exception& ex)
     {
         _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        _out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
 }
 

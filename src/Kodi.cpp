@@ -28,13 +28,13 @@
  */
 
 #include "GD.h"
-#include "MyFamily.h"
-#include "MyCentral.h"
+#include "Kodi.h"
+#include "KodiCentral.h"
 
-namespace MyFamily
+namespace Kodi
 {
 
-MyFamily::MyFamily(BaseLib::SharedObjects* bl, BaseLib::Systems::IFamilyEventSink* eventHandler) : BaseLib::Systems::DeviceFamily(bl, eventHandler, MY_FAMILY_ID, MY_FAMILY_NAME)
+Kodi::Kodi(BaseLib::SharedObjects* bl, BaseLib::Systems::IFamilyEventSink* eventHandler) : BaseLib::Systems::DeviceFamily(bl, eventHandler, MY_FAMILY_ID, MY_FAMILY_NAME)
 {
 	GD::bl = bl;
 	GD::family = this;
@@ -43,12 +43,12 @@ MyFamily::MyFamily(BaseLib::SharedObjects* bl, BaseLib::Systems::IFamilyEventSin
 	GD::out.printDebug("Debug: Loading module...");
 }
 
-MyFamily::~MyFamily()
+Kodi::~Kodi()
 {
 
 }
 
-void MyFamily::dispose()
+void Kodi::dispose()
 {
 	if(_disposed) return;
 	DeviceFamily::dispose();
@@ -57,33 +57,25 @@ void MyFamily::dispose()
 }
 
 
-void MyFamily::createCentral()
+void Kodi::createCentral()
 {
 	try
 	{
-		_central.reset(new MyCentral(0, "VKC0000001", this));
+		_central.reset(new KodiCentral(0, "VKC0000001", this));
 		GD::out.printMessage("Created central with id " + std::to_string(_central->getId()) + ".");
 	}
 	catch(const std::exception& ex)
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
-std::shared_ptr<BaseLib::Systems::ICentral> MyFamily::initializeCentral(uint32_t deviceId, int32_t address, std::string serialNumber)
+std::shared_ptr<BaseLib::Systems::ICentral> Kodi::initializeCentral(uint32_t deviceId, int32_t address, std::string serialNumber)
 {
-	return std::shared_ptr<MyCentral>(new MyCentral(deviceId, serialNumber, this));
+	return std::shared_ptr<KodiCentral>(new KodiCentral(deviceId, serialNumber, this));
 }
 
-PVariable MyFamily::getPairingInfo()
+PVariable Kodi::getPairingInfo()
 {
 	try
 	{
@@ -116,14 +108,6 @@ PVariable MyFamily::getPairingInfo()
 	catch(const std::exception& ex)
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 	}
 	return Variable::createError(-32500, "Unknown application error.");
 }

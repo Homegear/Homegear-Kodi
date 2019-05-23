@@ -30,10 +30,10 @@
 #ifndef KODIINTERFACE_H_
 #define KODIINTERFACE_H_
 
-#include "MyPacket.h"
+#include "KodiPacket.h"
 #include <homegear-base/BaseLib.h>
 
-namespace MyFamily
+namespace Kodi
 {
 
 using namespace BaseLib;
@@ -45,7 +45,7 @@ public:
 	virtual ~KodiInterface();
 
 	void setConnectedCallback(std::function<void(bool connected)> callback);
-	void setPacketReceivedCallback(std::function<void(std::shared_ptr<MyPacket> packet)> callback);
+	void setPacketReceivedCallback(std::function<void(std::shared_ptr<KodiPacket> packet)> callback);
 	void sendPacket(std::shared_ptr<BaseLib::Systems::Packet> packet);
 	std::string getHostname();
 	void setHostname(std::string& hostname);
@@ -74,7 +74,7 @@ protected:
 	std::unique_ptr<BaseLib::Rpc::JsonEncoder> _jsonEncoder;
 	std::unique_ptr<BaseLib::Rpc::JsonDecoder> _jsonDecoder;
 	std::function<void(bool connected)> _connectedCallback;
-	std::function<void(std::shared_ptr<MyPacket> packet)> _packetReceivedCallback;
+	std::function<void(std::shared_ptr<KodiPacket> packet)> _packetReceivedCallback;
 
 	std::thread _listenThread;
 	bool _stopCallbackThread = false;

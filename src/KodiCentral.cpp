@@ -27,29 +27,29 @@
  * files in the program, then also delete it here.
  */
 
-#include "MyCentral.h"
+#include "KodiCentral.h"
 #include "GD.h"
 
 #include <iomanip>
 
-namespace MyFamily {
+namespace Kodi {
 
-MyCentral::MyCentral(ICentralEventSink* eventHandler) : BaseLib::Systems::ICentral(MY_FAMILY_ID, GD::bl, eventHandler)
+KodiCentral::KodiCentral(ICentralEventSink* eventHandler) : BaseLib::Systems::ICentral(MY_FAMILY_ID, GD::bl, eventHandler)
 {
 	init();
 }
 
-MyCentral::MyCentral(uint32_t deviceID, std::string serialNumber, ICentralEventSink* eventHandler) : BaseLib::Systems::ICentral(MY_FAMILY_ID, GD::bl, deviceID, serialNumber, -1, eventHandler)
+KodiCentral::KodiCentral(uint32_t deviceID, std::string serialNumber, ICentralEventSink* eventHandler) : BaseLib::Systems::ICentral(MY_FAMILY_ID, GD::bl, deviceID, serialNumber, -1, eventHandler)
 {
 	init();
 }
 
-MyCentral::~MyCentral()
+KodiCentral::~KodiCentral()
 {
 	dispose();
 }
 
-void MyCentral::dispose(bool wait)
+void KodiCentral::dispose(bool wait)
 {
 	try
 	{
@@ -60,17 +60,9 @@ void MyCentral::dispose(bool wait)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
-void MyCentral::init()
+void KodiCentral::init()
 {
 	try
 	{
@@ -81,17 +73,9 @@ void MyCentral::init()
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
 }
 
-void MyCentral::loadPeers()
+void KodiCentral::loadPeers()
 {
 	try
 	{
@@ -100,7 +84,7 @@ void MyCentral::loadPeers()
 		{
 			int32_t peerID = row->second.at(0)->intValue;
 			GD::out.printMessage("Loading Kodi peer " + std::to_string(peerID));
-			std::shared_ptr<MyPeer> peer(new MyPeer(peerID, row->second.at(2)->intValue, row->second.at(3)->textValue, _deviceId, this));
+			std::shared_ptr<KodiPeer> peer(new KodiPeer(peerID, row->second.at(2)->intValue, row->second.at(3)->textValue, _deviceId, this));
 			if(!peer->load(this)) continue;
 			if(!peer->getRpcDevice()) continue;
 			std::lock_guard<std::mutex> peersGuard(_peersMutex);
@@ -112,24 +96,16 @@ void MyCentral::loadPeers()
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
-std::shared_ptr<MyPeer> MyCentral::getPeer(uint64_t id)
+std::shared_ptr<KodiPeer> KodiCentral::getPeer(uint64_t id)
 {
 	try
 	{
 		std::lock_guard<std::mutex> peersGuard(_peersMutex);
 		if(_peersById.find(id) != _peersById.end())
 		{
-			std::shared_ptr<MyPeer> peer(std::dynamic_pointer_cast<MyPeer>(_peersById.at(id)));
+			std::shared_ptr<KodiPeer> peer(std::dynamic_pointer_cast<KodiPeer>(_peersById.at(id)));
 			return peer;
 		}
 	}
@@ -137,25 +113,17 @@ std::shared_ptr<MyPeer> MyCentral::getPeer(uint64_t id)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
-    return std::shared_ptr<MyPeer>();
+    return std::shared_ptr<KodiPeer>();
 }
 
-std::shared_ptr<MyPeer> MyCentral::getPeer(std::string serialNumber)
+std::shared_ptr<KodiPeer> KodiCentral::getPeer(std::string serialNumber)
 {
 	try
 	{
 		std::lock_guard<std::mutex> peersGuard(_peersMutex);
 		if(_peersBySerial.find(serialNumber) != _peersBySerial.end())
 		{
-			std::shared_ptr<MyPeer> peer(std::dynamic_pointer_cast<MyPeer>(_peersBySerial.at(serialNumber)));
+			std::shared_ptr<KodiPeer> peer(std::dynamic_pointer_cast<KodiPeer>(_peersBySerial.at(serialNumber)));
 			return peer;
 		}
 	}
@@ -163,18 +131,10 @@ std::shared_ptr<MyPeer> MyCentral::getPeer(std::string serialNumber)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
-    return std::shared_ptr<MyPeer>();
+    return std::shared_ptr<KodiPeer>();
 }
 
-void MyCentral::savePeers(bool full)
+void KodiCentral::savePeers(bool full)
 {
 	try
 	{
@@ -189,21 +149,13 @@ void MyCentral::savePeers(bool full)
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
-void MyCentral::deletePeer(uint64_t id)
+void KodiCentral::deletePeer(uint64_t id)
 {
 	try
 	{
-		std::shared_ptr<MyPeer> peer(getPeer(id));
+		std::shared_ptr<KodiPeer> peer(getPeer(id));
 		if(!peer) return;
 		peer->deleting = true;
 		PVariable deviceAddresses(new Variable(VariableType::tArray));
@@ -245,17 +197,9 @@ void MyCentral::deletePeer(uint64_t id)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
-std::string MyCentral::handleCliCommand(std::string command)
+std::string KodiCentral::handleCliCommand(std::string command)
 {
 	try
 	{
@@ -309,7 +253,7 @@ std::string MyCentral::handleCliCommand(std::string command)
 			if(peerExists(serialNumber)) stringStream << "This peer is already paired to this central." << std::endl;
 			else
 			{
-				std::shared_ptr<MyPeer> peer = createPeer(serialNumber, false);
+				std::shared_ptr<KodiPeer> peer = createPeer(serialNumber, false);
 				if(!peer || !peer->getRpcDevice()) return "Device type not supported.\n";
 				try
 				{
@@ -326,16 +270,6 @@ std::string MyCentral::handleCliCommand(std::string command)
 				{
 					_peersMutex.unlock();
 					GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-				}
-				catch(BaseLib::Exception& ex)
-				{
-					_peersMutex.unlock();
-					GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-				}
-				catch(...)
-				{
-					_peersMutex.unlock();
-					GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
 				}
 
 				PVariable deviceDescriptions(new Variable(VariableType::tArray));
@@ -531,16 +465,6 @@ std::string MyCentral::handleCliCommand(std::string command)
 				_peersMutex.unlock();
 				GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 			}
-			catch(BaseLib::Exception& ex)
-			{
-				_peersMutex.unlock();
-				GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-			}
-			catch(...)
-			{
-				_peersMutex.unlock();
-				GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-			}
 		}
 		else if(command.compare(0, 13, "peers setname") == 0 || command.compare(0, 2, "pn") == 0)
 		{
@@ -584,7 +508,7 @@ std::string MyCentral::handleCliCommand(std::string command)
 			if(!peerExists(peerID)) stringStream << "This peer is not paired to this central." << std::endl;
 			else
 			{
-				std::shared_ptr<MyPeer> peer = getPeer(peerID);
+				std::shared_ptr<KodiPeer> peer = getPeer(peerID);
 				peer->setName(name);
 				stringStream << "Name set to \"" << name << "\"." << std::endl;
 			}
@@ -596,26 +520,18 @@ std::string MyCentral::handleCliCommand(std::string command)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
     return "Error executing command. See log file for more details.\n";
 }
 
-std::shared_ptr<MyPeer> MyCentral::createPeer(std::string serialNumber, bool save)
+std::shared_ptr<KodiPeer> KodiCentral::createPeer(std::string serialNumber, bool save)
 {
 	try
 	{
-		std::shared_ptr<MyPeer> peer(new MyPeer(_deviceId, this));
+		std::shared_ptr<KodiPeer> peer(new KodiPeer(_deviceId, this));
 		peer->setDeviceType(1);
 		peer->setSerialNumber(serialNumber);
 		peer->setRpcDevice(GD::family->getRpcDevices()->find(1, 0x10, -1));
-		if(!peer->getRpcDevice()) return std::shared_ptr<MyPeer>();
+		if(!peer->getRpcDevice()) return std::shared_ptr<KodiPeer>();
 		if(save) peer->save(true, true, false); //Save and create peerID
 		return peer;
 	}
@@ -623,25 +539,17 @@ std::shared_ptr<MyPeer> MyCentral::createPeer(std::string serialNumber, bool sav
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
-    return std::shared_ptr<MyPeer>();
+    return std::shared_ptr<KodiPeer>();
 }
 
-PVariable MyCentral::createDevice(BaseLib::PRpcClientInfo clientInfo, int32_t deviceType, std::string serialNumber, int32_t address, int32_t firmwareVersion, std::string interfaceId)
+PVariable KodiCentral::createDevice(BaseLib::PRpcClientInfo clientInfo, int32_t deviceType, std::string serialNumber, int32_t address, int32_t firmwareVersion, std::string interfaceId)
 {
 	try
 	{
 		if(serialNumber.size() < 10 || serialNumber.size() > 12) return Variable::createError(-1, "The serial number needs to have a size between 10 and 12.");
 		if(peerExists(serialNumber)) return Variable::createError(-5, "This peer is already paired to this central.");
 
-		std::shared_ptr<MyPeer> peer = createPeer(serialNumber, false);
+		std::shared_ptr<KodiPeer> peer = createPeer(serialNumber, false);
 		if(!peer || !peer->getRpcDevice()) return Variable::createError(-6, "Unknown device type.");
 
 		try
@@ -659,16 +567,6 @@ PVariable MyCentral::createDevice(BaseLib::PRpcClientInfo clientInfo, int32_t de
 			_peersMutex.unlock();
 			GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 		}
-		catch(BaseLib::Exception& ex)
-		{
-			_peersMutex.unlock();
-			GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-		}
-		catch(...)
-		{
-			_peersMutex.unlock();
-			GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-		}
 
 		PVariable deviceDescriptions(new Variable(VariableType::tArray));
 		deviceDescriptions->arrayValue = peer->getDeviceDescriptions(clientInfo, true, std::map<std::string, bool>());
@@ -682,18 +580,10 @@ PVariable MyCentral::createDevice(BaseLib::PRpcClientInfo clientInfo, int32_t de
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MyCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, std::string serialNumber, int32_t flags)
+PVariable KodiCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, std::string serialNumber, int32_t flags)
 {
 	try
 	{
@@ -702,7 +592,7 @@ PVariable MyCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, std::strin
 		uint64_t peerId = 0;
 
 		{
-			std::shared_ptr<MyPeer> peer = getPeer(serialNumber);
+			std::shared_ptr<KodiPeer> peer = getPeer(serialNumber);
 			if(!peer) return PVariable(new Variable(VariableType::tVoid));
 			peerId = peer->getID();
 		}
@@ -713,25 +603,17 @@ PVariable MyCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, std::strin
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MyCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, uint64_t peerId, int32_t flags)
+PVariable KodiCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, uint64_t peerId, int32_t flags)
 {
 	try
 	{
 		if(peerId == 0) return Variable::createError(-2, "Unknown device.");
 
 		{
-			std::shared_ptr<MyPeer> peer = getPeer(peerId);
+			std::shared_ptr<KodiPeer> peer = getPeer(peerId);
 			if(!peer) return PVariable(new Variable(VariableType::tVoid));
 		}
 
@@ -744,14 +626,6 @@ PVariable MyCentral::deleteDevice(BaseLib::PRpcClientInfo clientInfo, uint64_t p
 	catch(const std::exception& ex)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
     return Variable::createError(-32500, "Unknown application error.");
 }

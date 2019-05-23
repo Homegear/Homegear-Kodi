@@ -5,7 +5,7 @@ AM_LDFLAGS = -Wl,-rpath=/lib/homegear -Wl,-rpath=/usr/lib/homegear -Wl,-rpath=/u
 
 libdir = $(localstatedir)/lib/homegear/modules
 lib_LTLIBRARIES = mod_kodi.la
-mod_kodi_la_SOURCES = MyFamily.cpp MyFamily.h MyPacket.cpp MyPacket.h MyPeer.cpp MyPeer.h Factory.cpp Factory.h GD.cpp GD.h MyCentral.cpp MyCentral.h KodiInterface.h KodiInterface.cpp
+mod_kodi_la_SOURCES = Kodi.cpp KodiPacket.cpp KodiPeer.cpp Factory.cpp GD.cpp KodiCentral.cpp KodiInterface.cpp
 mod_kodi_la_LDFLAGS =-module -avoid-version -shared
 install-exec-hook:
 	rm -f $(DESTDIR)$(libdir)/mod_kodi.la

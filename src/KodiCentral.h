@@ -31,29 +31,29 @@
 #define MYCENTRAL_H_
 
 #include <homegear-base/BaseLib.h>
-#include "MyPeer.h"
+#include "KodiPeer.h"
 
 #include <memory>
 #include <mutex>
 #include <string>
 
-namespace MyFamily
+namespace Kodi
 {
 
-class MyCentral : public BaseLib::Systems::ICentral
+class KodiCentral : public BaseLib::Systems::ICentral
 {
 public:
-	MyCentral(ICentralEventSink* eventHandler);
-	MyCentral(uint32_t deviceType, std::string serialNumber, ICentralEventSink* eventHandler);
-	virtual ~MyCentral();
+	KodiCentral(ICentralEventSink* eventHandler);
+	KodiCentral(uint32_t deviceType, std::string serialNumber, ICentralEventSink* eventHandler);
+	virtual ~KodiCentral();
 	virtual void dispose(bool wait = true);
 
 	std::string handleCliCommand(std::string command);
 	virtual bool onPacketReceived(std::string& senderID, std::shared_ptr<BaseLib::Systems::Packet> packet) { return true; }
 
-	uint64_t getPeerIdFromSerial(std::string& serialNumber) { std::shared_ptr<MyPeer> peer = getPeer(serialNumber); if(peer) return peer->getID(); else return 0; }
-	std::shared_ptr<MyPeer> getPeer(uint64_t id);
-	std::shared_ptr<MyPeer> getPeer(std::string serialNumber);
+	uint64_t getPeerIdFromSerial(std::string& serialNumber) { std::shared_ptr<KodiPeer> peer = getPeer(serialNumber); if(peer) return peer->getID(); else return 0; }
+	std::shared_ptr<KodiPeer> getPeer(uint64_t id);
+	std::shared_ptr<KodiPeer> getPeer(std::string serialNumber);
 
 	virtual PVariable createDevice(BaseLib::PRpcClientInfo clientInfo, int32_t deviceType, std::string serialNumber, int32_t address, int32_t firmwareVersion, std::string interfaceId);
 	virtual PVariable deleteDevice(BaseLib::PRpcClientInfo clientInfo, std::string serialNumber, int32_t flags);
@@ -64,7 +64,7 @@ protected:
 	virtual void savePeers(bool full);
 	virtual void loadVariables() {}
 	virtual void saveVariables() {}
-	std::shared_ptr<MyPeer> createPeer(std::string serialNumber, bool save = true);
+	std::shared_ptr<KodiPeer> createPeer(std::string serialNumber, bool save = true);
 	void deletePeer(uint64_t id);
 };
 
