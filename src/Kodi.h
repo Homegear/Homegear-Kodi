@@ -34,15 +34,15 @@
 
 using namespace BaseLib;
 
-namespace MyFamily
+namespace Kodi
 {
-class MyCentral;
+class KodiCentral;
 
-class MyFamily : public BaseLib::Systems::DeviceFamily
+class Kodi : public BaseLib::Systems::DeviceFamily
 {
 public:
-	MyFamily(BaseLib::SharedObjects* bl, BaseLib::Systems::IFamilyEventSink* eventHandler);
-	virtual ~MyFamily();
+	Kodi(BaseLib::SharedObjects* bl, BaseLib::Systems::IFamilyEventSink* eventHandler);
+	virtual ~Kodi();
 	virtual void dispose();
 
 	virtual bool hasPhysicalInterface() { return false; }

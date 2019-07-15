@@ -29,9 +29,9 @@
 
 #include "GD.h"
 
-namespace MyFamily
+namespace Kodi
 {
 	BaseLib::SharedObjects* GD::bl = nullptr;
-	MyFamily* GD::family = nullptr;
+	Kodi* GD::family = nullptr;
 	BaseLib::Output GD::out;
 }

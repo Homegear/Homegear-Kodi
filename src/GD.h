@@ -34,9 +34,9 @@
 #define MY_FAMILY_NAME "Kodi"
 
 #include <homegear-base/BaseLib.h>
-#include "MyFamily.h"
+#include "Kodi.h"
 
-namespace MyFamily
+namespace Kodi
 {
 
 class GD
@@ -45,7 +45,7 @@ public:
 	virtual ~GD();
 
 	static BaseLib::SharedObjects* bl;
-	static MyFamily* family;
+	static Kodi* family;
 	static BaseLib::Output out;
 private:
 	GD();

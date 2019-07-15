@@ -32,17 +32,17 @@
 
 #include <homegear-base/BaseLib.h>
 
-namespace MyFamily
+namespace Kodi
 {
 
-class MyPacket : public BaseLib::Systems::Packet
+class KodiPacket : public BaseLib::Systems::Packet
 {
     public:
         //Properties
-        MyPacket();
-        MyPacket(BaseLib::PVariable& json, int64_t timeReceived = 0);
-        MyPacket(std::string method, BaseLib::PVariable parameters, int64_t timeReceived = 0);
-        virtual ~MyPacket();
+        KodiPacket();
+        KodiPacket(BaseLib::PVariable& json, int64_t timeReceived = 0);
+        KodiPacket(std::string method, BaseLib::PVariable parameters, int64_t timeReceived = 0);
+        virtual ~KodiPacket();
 
         virtual BaseLib::PVariable getJson();
 
