@@ -38,9 +38,9 @@
 using namespace BaseLib;
 using namespace BaseLib::DeviceDescription;
 
-namespace MyFamily
+namespace Kodi
 {
-class MyCentral;
+class KodiCentral;
 
 class FrameValue
 {
@@ -58,12 +58,12 @@ public:
 	std::map<std::string, FrameValue> values;
 };
 
-class MyPeer : public BaseLib::Systems::Peer, public BaseLib::Rpc::IWebserverEventSink
+class KodiPeer : public BaseLib::Systems::Peer, public BaseLib::Rpc::IWebserverEventSink
 {
 public:
-	MyPeer(uint32_t parentID, IPeerEventSink* eventHandler);
-	MyPeer(int32_t id, int32_t address, std::string serialNumber, uint32_t parentID, IPeerEventSink* eventHandler);
-	virtual ~MyPeer();
+	KodiPeer(uint32_t parentID, IPeerEventSink* eventHandler);
+	KodiPeer(int32_t id, int32_t address, std::string serialNumber, uint32_t parentID, IPeerEventSink* eventHandler);
+	virtual ~KodiPeer();
 	void init();
 	void dispose();
 
@@ -108,10 +108,10 @@ protected:
     virtual void saveVariables();
 
     void connected(bool connected);
-    void packetReceived(std::shared_ptr<MyPacket> packet);
+    void packetReceived(std::shared_ptr<KodiPacket> packet);
 
 	virtual std::shared_ptr<BaseLib::Systems::ICentral> getCentral();
-	void getValuesFromPacket(std::shared_ptr<MyPacket> packet, std::vector<FrameValues>& frameValue);
+	void getValuesFromPacket(std::shared_ptr<KodiPacket> packet, std::vector<FrameValues>& frameValue);
 
 	virtual PParameterGroup getParameterSet(int32_t channel, ParameterGroup::Type::Enum type);
 };

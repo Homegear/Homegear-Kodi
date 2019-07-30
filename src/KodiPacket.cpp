@@ -27,17 +27,17 @@
  * files in the program, then also delete it here.
  */
 
-#include "MyPacket.h"
+#include "KodiPacket.h"
 
 #include "GD.h"
 
-namespace MyFamily
+namespace Kodi
 {
-MyPacket::MyPacket()
+KodiPacket::KodiPacket()
 {
 }
 
-MyPacket::MyPacket(BaseLib::PVariable& json, int64_t timeReceived)
+KodiPacket::KodiPacket(BaseLib::PVariable& json, int64_t timeReceived)
 {
 	_timeReceived = timeReceived;
 	BaseLib::Struct::iterator jsonIterator = json->structValue->find("method");
@@ -48,33 +48,33 @@ MyPacket::MyPacket(BaseLib::PVariable& json, int64_t timeReceived)
 	if(jsonIterator != json->structValue->end()) _result = jsonIterator->second;
 }
 
-MyPacket::MyPacket(std::string method, BaseLib::PVariable parameters, int64_t timeReceived)
+KodiPacket::KodiPacket(std::string method, BaseLib::PVariable parameters, int64_t timeReceived)
 {
 	_timeReceived = timeReceived;
 	_method = method;
 	_parameters = parameters;
 }
 
-MyPacket::~MyPacket()
+KodiPacket::~KodiPacket()
 {
 }
 
-std::string MyPacket::getMethod()
+std::string KodiPacket::getMethod()
 {
 	return _method;
 }
 
-BaseLib::PVariable MyPacket::getParameters()
+BaseLib::PVariable KodiPacket::getParameters()
 {
 	return _parameters;
 }
 
-BaseLib::PVariable MyPacket::getResult()
+BaseLib::PVariable KodiPacket::getResult()
 {
 	return _result;
 }
 
-BaseLib::PVariable MyPacket::getJson()
+BaseLib::PVariable KodiPacket::getJson()
 {
 	try
 	{
@@ -87,14 +87,6 @@ BaseLib::PVariable MyPacket::getJson()
 	catch(const std::exception& ex)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
     return BaseLib::PVariable();
 }

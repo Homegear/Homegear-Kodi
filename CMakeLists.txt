@@ -10,14 +10,14 @@ set(SOURCE_FILES
         src/GD.h
         src/KodiInterface.cpp
         src/KodiInterface.h
-        src/MyCentral.cpp
-        src/MyCentral.h
-        src/MyFamily.cpp
-        src/MyFamily.h
-        src/MyPacket.cpp
-        src/MyPacket.h
-        src/MyPeer.cpp
-        src/MyPeer.h)
+        src/KodiCentral.cpp
+        src/KodiCentral.h
+        src/Kodi.cpp
+        src/Kodi.h
+        src/KodiPacket.cpp
+        src/KodiPacket.h
+        src/KodiPeer.cpp
+        src/KodiPeer.h)
 
 add_custom_target(homegear COMMAND ../../makeAll.sh SOURCES ${SOURCE_FILES})
 

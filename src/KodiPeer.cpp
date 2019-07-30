@@ -27,15 +27,17 @@
  * files in the program, then also delete it here.
  */
 
-#include "MyPeer.h"
+#include "KodiPeer.h"
 
 #include "GD.h"
-#include "MyPacket.h"
-#include "MyCentral.h"
+#include "KodiPacket.h"
+#include "KodiCentral.h"
 
-namespace MyFamily
+#include <iomanip>
+
+namespace Kodi
 {
-std::shared_ptr<BaseLib::Systems::ICentral> MyPeer::getCentral()
+std::shared_ptr<BaseLib::Systems::ICentral> KodiPeer::getCentral()
 {
 	try
 	{
@@ -47,28 +49,20 @@ std::shared_ptr<BaseLib::Systems::ICentral> MyPeer::getCentral()
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
 	return std::shared_ptr<BaseLib::Systems::ICentral>();
 }
 
-MyPeer::MyPeer(uint32_t parentID, IPeerEventSink* eventHandler) : BaseLib::Systems::Peer(GD::bl, parentID, eventHandler)
+KodiPeer::KodiPeer(uint32_t parentID, IPeerEventSink* eventHandler) : BaseLib::Systems::Peer(GD::bl, parentID, eventHandler)
 {
 	init();
 }
 
-MyPeer::MyPeer(int32_t id, int32_t address, std::string serialNumber, uint32_t parentID, IPeerEventSink* eventHandler) : BaseLib::Systems::Peer(GD::bl, id, address, serialNumber, parentID, eventHandler)
+KodiPeer::KodiPeer(int32_t id, int32_t address, std::string serialNumber, uint32_t parentID, IPeerEventSink* eventHandler) : BaseLib::Systems::Peer(GD::bl, id, address, serialNumber, parentID, eventHandler)
 {
 	init();
 }
 
-MyPeer::~MyPeer()
+KodiPeer::~KodiPeer()
 {
 	try
 	{
@@ -78,46 +72,30 @@ MyPeer::~MyPeer()
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
 }
 
-void MyPeer::init()
+void KodiPeer::init()
 {
 	try
 	{
 		_binaryEncoder.reset(new BaseLib::Rpc::RpcEncoder(GD::bl));
 		_binaryDecoder.reset(new BaseLib::Rpc::RpcDecoder(GD::bl));
-		_interface.setPacketReceivedCallback(std::bind(&MyPeer::packetReceived, this, std::placeholders::_1));
-		_interface.setConnectedCallback(std::bind(&MyPeer::connected, this, std::placeholders::_1));
+		_interface.setPacketReceivedCallback(std::bind(&KodiPeer::packetReceived, this, std::placeholders::_1));
+		_interface.setConnectedCallback(std::bind(&KodiPeer::connected, this, std::placeholders::_1));
 	}
 	catch(const std::exception& ex)
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
 }
 
-void MyPeer::dispose()
+void KodiPeer::dispose()
 {
 	if(_disposing) return;
 	Peer::dispose();
 }
 
-void MyPeer::homegearStarted()
+void KodiPeer::homegearStarted()
 {
 	try
 	{
@@ -127,17 +105,9 @@ void MyPeer::homegearStarted()
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
 }
 
-void MyPeer::homegearShuttingDown()
+void KodiPeer::homegearShuttingDown()
 {
 	try
 	{
@@ -148,17 +118,9 @@ void MyPeer::homegearShuttingDown()
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
 }
 
-std::string MyPeer::handleCliCommand(std::string command)
+std::string KodiPeer::handleCliCommand(std::string command)
 {
 	try
 	{
@@ -236,18 +198,10 @@ std::string MyPeer::handleCliCommand(std::string command)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
     return "Error executing command. See log file for more details.\n";
 }
 
-std::string MyPeer::printConfig()
+std::string KodiPeer::printConfig()
 {
 	try
 	{
@@ -300,19 +254,11 @@ std::string MyPeer::printConfig()
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
     return "";
 }
 
 
-void MyPeer::loadVariables(BaseLib::Systems::ICentral* central, std::shared_ptr<BaseLib::Database::DataTable>& rows)
+void KodiPeer::loadVariables(BaseLib::Systems::ICentral* central, std::shared_ptr<BaseLib::Database::DataTable>& rows)
 {
 	try
 	{
@@ -323,17 +269,9 @@ void MyPeer::loadVariables(BaseLib::Systems::ICentral* central, std::shared_ptr<
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
-bool MyPeer::load(BaseLib::Systems::ICentral* central)
+bool KodiPeer::load(BaseLib::Systems::ICentral* central)
 {
 	try
 	{
@@ -366,7 +304,7 @@ bool MyPeer::load(BaseLib::Systems::ICentral* central)
 				parameterData = portIterator->second.getBinaryData();
 				BaseLib::PVariable port = portIterator->second.rpcParameter->convertFromPacket(parameterData);
 				_interface.setHostname(hostname->stringValue);
-				_interface.setPort(hostname->integerValue);
+				_interface.setPort(port->integerValue);
 				_interface.startListening();
 			}
 		}
@@ -377,18 +315,10 @@ bool MyPeer::load(BaseLib::Systems::ICentral* central)
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
     return false;
 }
 
-void MyPeer::saveVariables()
+void KodiPeer::saveVariables()
 {
 	try
 	{
@@ -399,17 +329,9 @@ void MyPeer::saveVariables()
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
-void MyPeer::connected(bool connected)
+void KodiPeer::connected(bool connected)
 {
 	try
 	{
@@ -442,17 +364,9 @@ void MyPeer::connected(bool connected)
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
-void MyPeer::getValuesFromPacket(std::shared_ptr<MyPacket> packet, std::vector<FrameValues>& frameValues)
+void KodiPeer::getValuesFromPacket(std::shared_ptr<KodiPacket> packet, std::vector<FrameValues>& frameValues)
 {
 	try
 	{
@@ -558,17 +472,9 @@ void MyPeer::getValuesFromPacket(std::shared_ptr<MyPacket> packet, std::vector<F
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
-void MyPeer::packetReceived(std::shared_ptr<MyPacket> packet)
+void KodiPeer::packetReceived(std::shared_ptr<KodiPacket> packet)
 {
 	try
 	{
@@ -644,17 +550,9 @@ void MyPeer::packetReceived(std::shared_ptr<MyPacket> packet)
     {
     	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-    	GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
 }
 
-PParameterGroup MyPeer::getParameterSet(int32_t channel, ParameterGroup::Type::Enum type)
+PParameterGroup KodiPeer::getParameterSet(int32_t channel, ParameterGroup::Type::Enum type)
 {
 	try
 	{
@@ -667,18 +565,10 @@ PParameterGroup MyPeer::getParameterSet(int32_t channel, ParameterGroup::Type::E
 	{
 		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
 	}
-	catch(BaseLib::Exception& ex)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-	}
-	catch(...)
-	{
-		GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-	}
 	return PParameterGroup();
 }
 
-PVariable MyPeer::putParamset(BaseLib::PRpcClientInfo clientInfo, int32_t channel, ParameterGroup::Type::Enum type, uint64_t remoteID, int32_t remoteChannel, PVariable variables, bool checkAcls, bool onlyPushing)
+PVariable KodiPeer::putParamset(BaseLib::PRpcClientInfo clientInfo, int32_t channel, ParameterGroup::Type::Enum type, uint64_t remoteID, int32_t remoteChannel, PVariable variables, bool checkAcls, bool onlyPushing)
 {
 	try
 	{
@@ -753,18 +643,10 @@ PVariable MyPeer::putParamset(BaseLib::PRpcClientInfo clientInfo, int32_t channe
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
     }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
-    }
     return Variable::createError(-32500, "Unknown application error.");
 }
 
-PVariable MyPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel, std::string valueKey, PVariable value, bool wait)
+PVariable KodiPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel, std::string valueKey, PVariable value, bool wait)
 {
 	try
 	{
@@ -866,7 +748,7 @@ PVariable MyPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel,
 			}
 		}
 
-		std::shared_ptr<MyPacket> packet(new MyPacket(frame->function1, parameters));
+		std::shared_ptr<KodiPacket> packet(new KodiPacket(frame->function1, parameters));
 		_interface.sendPacket(packet);
 
 		if(!valueKeys->empty())
@@ -881,14 +763,6 @@ PVariable MyPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channel,
 	catch(const std::exception& ex)
     {
         GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(BaseLib::Exception& ex)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__, ex.what());
-    }
-    catch(...)
-    {
-        GD::out.printEx(__FILE__, __LINE__, __PRETTY_FUNCTION__);
     }
     return Variable::createError(-32500, "Unknown application error. See error log for more details.");
 }
