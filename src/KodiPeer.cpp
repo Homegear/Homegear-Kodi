@@ -300,9 +300,9 @@ bool KodiPeer::load(BaseLib::Systems::ICentral* central)
 			if(hostnameIterator != channelIterator->second.end() && portIterator != channelIterator->second.end() && hostnameIterator->second.rpcParameter && portIterator->second.rpcParameter)
 			{
 				std::vector<uint8_t> parameterData = hostnameIterator->second.getBinaryData();
-				BaseLib::PVariable hostname = hostnameIterator->second.rpcParameter->convertFromPacket(parameterData);
+				BaseLib::PVariable hostname = hostnameIterator->second.rpcParameter->convertFromPacket(parameterData, hostnameIterator->second.invert(), false);
 				parameterData = portIterator->second.getBinaryData();
-				BaseLib::PVariable port = portIterator->second.rpcParameter->convertFromPacket(parameterData);
+				BaseLib::PVariable port = portIterator->second.rpcParameter->convertFromPacket(parameterData, portIterator->second.invert(), false);
 				_interface.setHostname(hostname->stringValue);
 				_interface.setPort(port->integerValue);
 				_interface.startListening();
@@ -460,8 +460,8 @@ void KodiPeer::getValuesFromPacket(std::shared_ptr<KodiPacket> packet, std::vect
 						//This is a little nasty and costs a lot of resources, but we need to run the data through the packet converter
 						std::vector<uint8_t> encodedData;
 						_binaryEncoder->encodeResponse(value, encodedData);
-						PVariable data = (*k)->convertFromPacket(encodedData, true);
-						(*k)->convertToPacket(data, currentFrameValues.values[(*k)->id].value);
+						PVariable data = (*k)->convertFromPacket(encodedData, false, true);
+						(*k)->convertToPacket(data, false, currentFrameValues.values[(*k)->id].value);
 					}
 				}
 			}
@@ -528,7 +528,7 @@ void KodiPeer::packetReceived(std::shared_ptr<KodiPacket> packet)
 						}
 
 						valueKeys[*j]->push_back(i->first);
-						rpcValues[*j]->push_back(parameter.rpcParameter->convertFromPacket(i->second.value, true));
+						rpcValues[*j]->push_back(parameter.rpcParameter->convertFromPacket(i->second.value, parameter.invert(), true));
 					}
 				}
 			}
@@ -604,7 +604,7 @@ PVariable KodiPeer::putParamset(BaseLib::PRpcClientInfo clientInfo, int32_t chan
 				else if(i->first == "PORT" && i->second->integerValue != _interface.getPort()) newPort = i->second->integerValue;
 
 				std::vector<uint8_t> parameterData;
-				parameter.rpcParameter->convertToPacket(i->second, parameterData);
+				parameter.rpcParameter->convertToPacket(i->second, parameter.invert(), parameterData);
 				parameter.setBinaryData(parameterData);
 				if(parameter.databaseId > 0) saveParameter(parameter.databaseId, parameterData);
 				else saveParameter(0, ParameterGroup::Type::Enum::config, channel, i->first, parameterData);
@@ -668,11 +668,11 @@ PVariable KodiPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channe
 		if(rpcParameter->physical->operationType == IPhysical::OperationType::Enum::store)
 		{
 			std::vector<uint8_t> parameterData;
-			rpcParameter->convertToPacket(value, parameterData);
+			rpcParameter->convertToPacket(value, parameter.invert(), parameterData);
 			parameter.setBinaryData(parameterData);
 			if(parameter.databaseId > 0) saveParameter(parameter.databaseId, parameterData);
 			else saveParameter(0, ParameterGroup::Type::Enum::variables, channel, valueKey, parameterData);
-			value = rpcParameter->convertFromPacket(parameterData, false);
+			value = rpcParameter->convertFromPacket(parameterData, parameter.invert(), false);
 			if(rpcParameter->readable)
 			{
 				valueKeys->push_back(valueKey);
@@ -693,13 +693,13 @@ PVariable KodiPeer::setValue(BaseLib::PRpcClientInfo clientInfo, uint32_t channe
 		if(packetIterator == _rpcDevice->packetsById.end()) return Variable::createError(-6, "No frame was found for parameter " + valueKey);
 		PPacket frame = packetIterator->second;
 		std::vector<uint8_t> parameterData;
-		rpcParameter->convertToPacket(value, parameterData);
+		rpcParameter->convertToPacket(value, parameter.invert(), parameterData);
 		parameter.setBinaryData(parameterData);
 		if(parameter.databaseId > 0) saveParameter(parameter.databaseId, parameterData);
 		else saveParameter(0, ParameterGroup::Type::Enum::variables, channel, valueKey, parameterData);
 		if(_bl->debugLevel > 4) GD::out.printDebug("Debug: " + valueKey + " of peer " + std::to_string(_peerID) + " with serial number " + _serialNumber + ":" + std::to_string(channel) + " was set to " + BaseLib::HelperFunctions::getHexString(parameterData) + ".");
 
-		value = rpcParameter->convertFromPacket(parameterData, false);
+		value = rpcParameter->convertFromPacket(parameterData, parameter.invert(), false);
 		if(rpcParameter->readable)
 		{
 			valueKeys->push_back(valueKey);
