@@ -30,6 +30,8 @@
 #ifndef MYPACKET_H_
 #define MYPACKET_H_
 
+#include <cstdint>
+
 #include <homegear-base/BaseLib.h>
 
 namespace Kodi

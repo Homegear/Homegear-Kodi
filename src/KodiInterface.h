@@ -30,6 +30,8 @@
 #ifndef KODIINTERFACE_H_
 #define KODIINTERFACE_H_
 
+#include <cstdint>
+
 #include "KodiPacket.h"
 #include <homegear-base/BaseLib.h>
 
